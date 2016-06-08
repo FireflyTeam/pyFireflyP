@@ -145,8 +145,9 @@ class DevMem:
         for i in range(length):
             data.append(struct.unpack('I', mem.read(self.word))[0])
 
-        abs_addr = self.base_addr + virt_base_addr
-        return DevMemBuffer(abs_addr + offset, data)
+        return data
+       #abs_addr = self.base_addr + virt_base_addr
+       #return DevMemBuffer(abs_addr + offset, data)
 
 
     """
