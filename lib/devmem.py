@@ -145,9 +145,10 @@ class DevMem:
         for i in range(length):
             data.append(struct.unpack('I', mem.read(self.word))[0])
 
+		#just return list, modified by zhansb
+		#abs_addr = self.base_addr + virt_base_addr
+		#return DevMemBuffer(abs_addr + offset, data)
         return data
-       #abs_addr = self.base_addr + virt_base_addr
-       #return DevMemBuffer(abs_addr + offset, data)
 
 
     """
@@ -163,7 +164,8 @@ class DevMem:
         mem = self.mem
 
         # Compensate for the base_address not being what the user requested
-        offset += self.base_addr_offset
+        #offset += self.base_addr_offset	#fix double plus base_addr_offset by zhansb
+
 
         # Check that the operation is going write to an aligned location
         if (offset & ~self.mask): raise AssertionError
