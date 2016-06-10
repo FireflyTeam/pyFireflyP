@@ -3,9 +3,9 @@
 
 # GPIO iomux registers
 class MuxReg:
-	GRF_GPIO0A_IOMUX	=0x0084
-	GRF_GPIO0B_IOMUX	=0x0088
-	GRF_GPIO0C_IOMUX	=0x008c
+	GRF_GPIO0A_IOMUX	=0x0000
+	GRF_GPIO0B_IOMUX	=0x0004
+	GRF_GPIO0C_IOMUX	=0x0008
 
 	GRF_GPIO1D_IOMUX    =0x000c
 
@@ -64,6 +64,29 @@ class GpioLevel:
 class GpioDir:
     INPUT = 0
     OUTPUT = 1
+
+class GpioMux:
+	MUX_GPIO	=0
+	MUX_1		=1
+	MUX_2		=2
+	MUX_3		=3
+	MUX_4		=4
+	MUX_5		=5
+	MUX_6		=6
+	MUX_7		=7
+
+
+BANK={
+	'GPIO0':0,
+	'GPIO1':1,
+	'GPIO2':2,
+	'GPIO3':3,
+	'GPIO4':4,
+	'GPIO5':5,
+	'GPIO6':6,
+	'GPIO7':7,
+	'GPIO8':8,
+}
 
 PIN={
     'A0': 0,    'A1': 1,    'A2': 2,    'A3': 3,    'A4': 4,    'A5': 5,    'A6': 6,    'A7': 7,

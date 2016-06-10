@@ -69,9 +69,10 @@ class Gpio:
         setattr(self, mapname, mr)
 
     def _get_bank_pin(self, gpio):
-        bank = gpio[:5]
+        sbank = gpio[:5]
+        bank = BANK[sbank]
         pin = PIN[gpio[5:]]
-        regs = self.regs[bank]
+        regs = self.regs[sbank]
         return bank,pin,regs
 
     def set_dir(self, gpio, dir):
@@ -82,11 +83,8 @@ class Gpio:
         logging.debug("set_dir: set <%s>=%d" % (gpio, dir))
         assert dir in cons_list(GpioDir)
 
-        try:
-            bank,pin,regs = self._get_bank_pin(gpio)
-        except:
-            logging.error("set_dir: set <%s>=%d error!" % (gpio, dir))
-            return None
+        self.set_mux(gpio, GpioMux.MUX_GPIO)   #set iomux=gpio default
+        bank,pin,regs = self._get_bank_pin(gpio)
 
         reg = regs.ctrl
         val = reg.read(CtrlReg.GPIO_SWPORT_DDR)
@@ -99,11 +97,8 @@ class Gpio:
         Returns the level of the pin for input direction
         or return setting of the DR register for output gpios.
         """
-        try:
-            bank,pin,regs = self._get_bank_pin(gpio)
-        except:
-            logging.error("get_level: get <%s> error!" % (gpio))
-            return None
+        bank,pin,regs = self._get_bank_pin(gpio)
+
         reg = regs.ctrl
         val = reg.read(CtrlReg.GPIO_EXT_PORT)
         val >>=pin
@@ -119,11 +114,8 @@ class Gpio:
         logging.debug("set_level: set <%s>=%d" % (gpio, level))
         assert level in cons_list(GpioLevel)
 
-        try:
-            bank,pin,regs = self._get_bank_pin(gpio)
-        except:
-            logging.error("set_level: set <%s>=%d error!" % (gpio, level))
-            return None
+        bank,pin,regs = self._get_bank_pin(gpio)
+
         reg = regs.ctrl
         val = reg.read(CtrlReg.GPIO_SWPORT_DR)
         reg.write(CtrlReg.GPIO_SWPORT_DR, (val & (~(1<<pin))) | (level<<pin))
@@ -131,19 +123,17 @@ class Gpio:
     def set_mux(self, gpio, mux):
         """
         set GPIO mux
-        :mux: refer to 
+        :mux: refer to GpioMux
         """
         logging.debug("set_mux: set <%s>=%d" % (gpio, mux))
-        try:
-            offset,bits = get_mux_offset_bits(gpio)
-        except AttributeError as e:
-            logging.error("set_mux: get <%s> offset error" % (gpio))
-            return None
+        assert mux in cons_list(GpioMux)
+
+        bank,pin,regs = self._get_bank_pin(gpio)
 
         try:
-            bank,pin,regs = self._get_bank_pin(gpio)
+            offset,bits = get_mux_offset_bits(gpio)
         except:
-            logging.error("set_rk32_iomux: set <%s>=%d error" % (gpio, mux))
+            logging.warn("set_mux: unknow mux of <%s>" % (gpio))
             return None
 
         set_rk32_iomux(bank, pin, regs.iomux, offset, bits, mux)
@@ -160,7 +150,7 @@ def get_mux_offset_bits(gpio):
     try:
         offset = getattr(MuxReg, "GRF_" + gpio[:6] + "_IOMUX")
         bits = 2
-    except AttributeError as e:
+    except:
         if gpio[6] < 4:
             offset = getattr(MuxReg, "GRF_" + gpio[:6] + "L_IOMUX")
         else:
@@ -171,30 +161,23 @@ def get_mux_offset_bits(gpio):
 def set_rk32_iomux(bank, pin, reg, offset, bits, mux):
     if bits == 2:
         bit = (pin % 8) * 2
-
-        if bank == "GPIO0":
-            data = reg.read(offset);
-            data &= ~(3<<bit);
-            data |= (mux & 3) << bit;
-            reg.write(offset, data);
-        else:
-            data = (3 << (bit + 16));
-            data |= (mux & 3) << bit;
-            reg.write(offset, data);
+        mask = 0x3
     elif bits == 4:
         bit = (pin % 4) * 4;
-
-        if bank == "GPIO0":
-            data = reg.read(offset);
-            data &= ~(0x0f<<bit);
-            data |= (mux & 0x0f) << bit;
-            reg.write(offset, data);
-        else:
-            data = (0x0f << (bit + 16));
-            data |= (mux & 0x0f) << bit;
-            reg.write(offset, data);
+        mask = 0xf
     else:
-        logging.error("set_mux: set <%s-%s> mux<%s> error" % (bank, pin, mux))
+        logging.warn("set_rk32_iomux: unknow bits of <%s-%s>" % (bank, pin, mux))
+        return None
+
+    if bank == 0:
+        data = reg.read(offset);
+        data &= ~(mask<<bit);
+        data |= (mux & mask) << bit;
+        reg.write(offset, data);
+    else:
+        data = (mask<< (bit + 16));
+        data |= (mux & mask) << bit;
+        reg.write(offset, data);
 
 def gpio_init():
     return gpio()

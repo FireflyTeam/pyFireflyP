@@ -2,8 +2,10 @@
 
 from rk3288.gpio import Gpio
 from rk3288.cons import *
+
 import time
 import logging
+import pdb
 
 logging.basicConfig(level=logging.DEBUG)
 
@@ -17,6 +19,21 @@ GPIO7A1_IOMUX_PWM1=1
 
 if __name__ ==  '__main__':
     gpio = Gpio()
+
+    #OP='GPIO0A7'
+    #IP='GPIO7B1'
+    IP='GPIO0A7'
+    OP='GPIO7B1'
+    gpio.set_dir(OP, GpioDir.OUTPUT)
+    gpio.set_dir(IP, GpioDir.INPUT)
+    while True:
+        gpio.set_level(OP,GpioLevel.HIGH)
+        print('IP=%d' % gpio.get_level(IP))
+        time.sleep(2)
+        gpio.set_level(OP,GpioLevel.LOW)
+        print('OP=%d' % gpio.get_level(IP))
+        time.sleep(2)
+
     gpio.set_mux(PWM1, GPIO7A1_IOMUX_PWM1)
 
     gpio.set_dir(LED_BLUE, GpioDir.OUTPUT)
@@ -30,4 +47,5 @@ if __name__ ==  '__main__':
         gpio.set_level(LED_YELLOW, GpioLevel.HIGH)
         gpio.get_level(LED_YELLOW)
         time.sleep(0.5)
-    1#gpio.set_level("GPIO7C5", GpioLevel.LOW)
+    #gpio.set_level("GPIO7C5", GpioLevel.LOW)
+    #gpio.set_mux('GPIO9A15', 0)	# except test for error gpio
