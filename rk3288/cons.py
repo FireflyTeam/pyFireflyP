@@ -40,7 +40,94 @@ class MuxReg:
 	GRF_GPIO8A_IOMUX    =0x0080
 	GRF_GPIO8B_IOMUX    =0x0084
 
+# GPIO slew rate control registers
+class SlewReg:
+	GRF_GPIO1H_SR           =0x0104
+	GRF_GPIO2L_SR           =0x0108
+	GRF_GPIO2H_SR           =0x010c
+	GRF_GPIO3L_SR           =0x0110
+	GRF_GPIO3H_SR           =0x0114
+	GRF_GPIO4L_SR           =0x0118
+	GRF_GPIO4H_SR           =0x011c
+	GRF_GPIO5L_SR           =0x0120
+	GRF_GPIO5H_SR           =0x0124
+	GRF_GPIO6L_SR           =0x0128
+	GRF_GPIO6H_SR           =0x012c
+	GRF_GPIO7L_SR           =0x0130
+	GRF_GPIO7H_SR           =0x0134
+	GRF_GPIO8L_SR           =0x0138
 
+# GPIO pull up/pull down registers
+class PullReg:
+	GRF_GPIO0A_P            =0x0064
+	GRF_GPIO0B_P            =0x0068
+	GRF_GPIO0C_P            =0x006c
+
+	GRF_GPIO1D_P            =0x014c
+
+	GRF_GPIO2A_P            =0x0150
+	GRF_GPIO2B_P            =0x0154
+	GRF_GPIO2C_P            =0x0158
+
+	GRF_GPIO3A_P            =0x0160
+	GRF_GPIO3B_P            =0x0164
+	GRF_GPIO3C_P            =0x0168
+	GRF_GPIO3D_P            =0x016c
+
+	GRF_GPIO4A_P            =0x0170
+	GRF_GPIO4B_P            =0x0174
+	GRF_GPIO4C_P            =0x0178
+	GRF_GPIO4D_P            =0x017c
+
+	GRF_GPIO5B_P            =0x0184
+	GRF_GPIO5C_P            =0x0188
+
+	GRF_GPIO6A_P            =0x0190
+	GRF_GPIO6B_P            =0x0194
+	GRF_GPIO6C_P            =0x0198
+
+	GRF_GPIO7A_P            =0x01a0
+	GRF_GPIO7B_P            =0x01a4
+	GRF_GPIO7C_P            =0x01a8
+
+	GRF_GPIO8A_P            =0x01b0
+	GRF_GPIO8B_P            =0x01b4
+
+# GPIO drive strength control registers
+class DrvReg:
+	GRF_GPIO0A_E            =0x0070
+	GRF_GPIO0B_E            =0x0074
+	GRF_GPIO0C_E            =0x0078
+
+	GRF_GPIO1D_E            =0x01cc
+	
+	GRF_GPIO2A_E            =0x01d0
+	GRF_GPIO2B_E            =0x01d4
+	GRF_GPIO2C_E            =0x01d8
+
+	GRF_GPIO3A_E            =0x01e0
+	GRF_GPIO3B_E            =0x01e4
+	GRF_GPIO3C_E            =0x01e8
+	GRF_GPIO3D_E            =0x01ec
+
+	GRF_GPIO4A_E            =0x01f0
+	GRF_GPIO4B_E            =0x01f4
+	GRF_GPIO4C_E            =0x01f8
+	GRF_GPIO4D_E            =0x01fc
+
+	GRF_GPIO5B_E            =0x0204
+	GRF_GPIO5C_E            =0x0208
+
+	GRF_GPIO6A_E            =0x0210
+	GRF_GPIO6B_E            =0x0214
+	GRF_GPIO6C_E            =0x0218
+
+	GRF_GPIO7A_E            =0x0220
+	GRF_GPIO7B_E            =0x0224
+	GRF_GPIO7C_E            =0x0228
+
+	GRF_GPIO8A_E            =0x0230
+	GRF_GPIO8B_E            =0x0234
 
 # GPIO control registers
 class CtrlReg:
@@ -75,7 +162,19 @@ class GpioMux:
 	MUX_6		=6
 	MUX_7		=7
 
+class GpioPull:
+	NORAML		=0
+	UP			=1
+	DOWN		=2
+	BUS_HOLD	=3
 
+class GpioDrv:
+	DRV_2MA		=0
+	DRV_4MA		=1
+	DRV_8MA		=2
+	DRV_12MA	=3
+
+	
 BANK={
 	'GPIO0':0,
 	'GPIO1':1,

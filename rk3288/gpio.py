@@ -19,7 +19,6 @@ class MapReg:
         self.mem.write(offset, [val,])
 
     def read(self, offset):
-        val = 0xac00ac01
         val = self.mem.read(offset, 1)[0]
         logging.debug("read: \toffset=%#06x, val=%#010x\t(%s)" % (offset, val, bin(val)))
         return val
@@ -147,11 +146,64 @@ class Gpio:
 
         set_rk32_iomux(bank, pin, regs.iomux, offset, bits, mux)
 
-    def set_pull(self, gpio, pd):
-        pass
+    def set_pull(self, gpio, pull):
+        """
+        set GPIO pull
+        :pull: refer to GpioPull
+        """
+        logging.debug("set_pull: set <%s>=%d" % (gpio, pull))
+        assert pull in cons_list(GpioPull)
+
+        bank,pin,regs = self._get_bank_pin(gpio)
+
+        try:
+            offset= get_pull_offset_bits(gpio)
+        except:
+            logging.warn("set_pull: unknow pull of <%s>" % (gpio))
+            return None
+
+        set_rk32_pull(pin, regs.pull, offset, pull)
 
     def set_drv(self, gpio, drv):
-        pass
+        """
+        set GPIO drv
+        :drv: refer to GpioDrv
+        """
+        logging.debug("set_drv: set <%s>=%d" % (gpio, drv))
+        assert drv in cons_list(GpioDrv)
+
+        bank,pin,regs = self._get_bank_pin(gpio)
+
+        try:
+            offset= get_drv_offset_bits(gpio)
+        except:
+            logging.warn("set_drv: unknow drv of <%s>" % (gpio))
+            return None
+
+        set_rk32_drv(pin, regs.drv, offset, drv)
+
+
+def get_pull_offset_bits(gpio):
+    offset = -1
+    offset = getattr(PullReg, "GRF_" + gpio[:6] + "_P")
+    return offset
+
+def set_rk32_pull(pin, reg, offset, pull):
+    bit = (pin % 8)
+    bit *= 2
+                
+    # enable the write to the equivalent lower bits 
+    data = 3 << (bit + 16)
+    data |= (pull << bit)
+
+    reg.write(offset, data)
+
+def get_drv_offset_bits(gpio):
+    offset = -1
+    offset = getattr(DrvReg, "GRF_" + gpio[:6] + "_E")
+    return offset
+
+set_rk32_drv = set_rk32_pull
 
 def get_mux_offset_bits(gpio):
     offset = -1
@@ -172,21 +224,20 @@ def set_rk32_iomux(bank, pin, reg, offset, bits, mux):
         bit = (pin % 8) * 2
         mask = 0x3
     elif bits == 4:
-        bit = (pin % 4) * 4;
+        bit = (pin % 4) * 4
         mask = 0xf
     else:
         logging.warn("set_rk32_iomux: unknow bits of <%s-%s>" % (bank, pin, mux))
         return None
 
     if bank == 0:
-        data = reg.read(offset);
-        data &= ~(mask<<bit);
-        data |= (mux & mask) << bit;
-        reg.write(offset, data);
+        data = reg.read(offset)
+        data &= ~(mask<<bit)
+        data |= (mux & mask) << bit
     else:
-        data = (mask<< (bit + 16));
-        data |= (mux & mask) << bit;
-        reg.write(offset, data);
+        data = (mask<< (bit + 16))
+        data |= (mux & mask) << bit
+    reg.write(offset, data)
 
 def gpio_init():
     return gpio()
