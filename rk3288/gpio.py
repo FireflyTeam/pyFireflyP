@@ -42,12 +42,15 @@ class Bank:
 class Gpio:
     def __init__(self):
         self._set_mapreg('gpio0_ctrl',0xff750000,0x100)
-        self._set_mapreg('gpio0_iomux',0xff730084,0x0c)
-        self._set_mapreg('gpio0_pull',0xff730064,0x0c)
-        self._set_mapreg('gpio0_drv',0xff730070,0x0c)
-        self._set_mapreg('gpio18_iomux',0xff770000,0x140)
-        self._set_mapreg('gpio18_pull',0xff770140,0x80)
-        self._set_mapreg('gpio18_drv',0xff7701c0,0x80)
+       #self._set_mapreg('gpio0_iomux',0xff730084,0x0c)
+       #self._set_mapreg('gpio0_pull',0xff730064,0x0c)
+       #self._set_mapreg('gpio0_drv',0xff730070,0x0c)
+       #self._set_mapreg('gpio18_iomux',0xff770000,0x140)
+       #self._set_mapreg('gpio18_pull',0xff770140,0x80)
+       #self._set_mapreg('gpio18_drv',0xff7701c0,0x80)
+        self._set_mapreg('gpio0_base',0xff730000,0x7c)
+        self._set_mapreg('gpio18_base',0xff770000,0x240)
+
         self._set_mapreg('gpio1_ctrl',0xff780000,0x100)
         self._set_mapreg('gpio2_ctrl',0xff790000,0x100)
         self._set_mapreg('gpio3_ctrl',0xff7a0000,0x100)
@@ -59,9 +62,15 @@ class Gpio:
         self._set_mapreg('gpio15_ctrl',0xff7f2000,0x100)
 
         self.regs= {
-            "GPIO0": Bank(self.gpio0_ctrl, self.gpio0_iomux, self.gpio0_pull, self.gpio0_drv),
-            "GPIO7": Bank(self.gpio7_ctrl, self.gpio18_iomux, self.gpio18_pull, self.gpio18_drv),
-            "GPIO8": Bank(self.gpio8_ctrl, self.gpio18_iomux, self.gpio18_pull, self.gpio18_drv),
+            "GPIO0": Bank(self.gpio0_ctrl, self.gpio0_base, self.gpio0_base, self.gpio0_base),
+            "GPIO1": Bank(self.gpio1_ctrl, self.gpio18_base, self.gpio18_base, self.gpio18_base),
+            "GPIO2": Bank(self.gpio2_ctrl, self.gpio18_base, self.gpio18_base, self.gpio18_base),
+            "GPIO3": Bank(self.gpio3_ctrl, self.gpio18_base, self.gpio18_base, self.gpio18_base),
+            "GPIO4": Bank(self.gpio4_ctrl, self.gpio18_base, self.gpio18_base, self.gpio18_base),
+            "GPIO5": Bank(self.gpio5_ctrl, self.gpio18_base, self.gpio18_base, self.gpio18_base),
+            "GPIO6": Bank(self.gpio6_ctrl, self.gpio18_base, self.gpio18_base, self.gpio18_base),
+            "GPIO7": Bank(self.gpio7_ctrl, self.gpio18_base, self.gpio18_base, self.gpio18_base),
+            "GPIO8": Bank(self.gpio8_ctrl, self.gpio18_base, self.gpio18_base, self.gpio18_base),
         }
 
     def _set_mapreg(self, mapname, addr, size):
