@@ -3,6 +3,7 @@
 from rk3288.gpio import Gpio
 from rk3288.cons import *
 
+import unittest
 import time
 import logging
 import pdb
@@ -20,19 +21,14 @@ GPIO7A1_IOMUX_PWM1=1
 if __name__ ==  '__main__':
     gpio = Gpio()
 
-    #OP='GPIO0A7'
-    #IP='GPIO7B1'
-    IP='GPIO0A7'
-    OP='GPIO7B1'
-    gpio.set_dir(OP, GpioDir.OUTPUT)
-    gpio.set_dir(IP, GpioDir.INPUT)
-    while True:
-        gpio.set_level(OP,GpioLevel.HIGH)
-        print('IP=%d' % gpio.get_level(IP))
-        time.sleep(2)
-        gpio.set_level(OP,GpioLevel.LOW)
-        print('OP=%d' % gpio.get_level(IP))
-        time.sleep(2)
+    G0='GPIO0B5'
+    G5='GPIO5B1'
+
+    gpio.set_dir(G5, GpioDir.OUTPUT)
+    pdb.set_trace()
+    gpio.set_drv(G5, GpioDrv.DRV_2MA)
+    gpio.set_drv(G5, GpioDrv.DRV_12MA)
+
 
     gpio.set_mux(PWM1, GPIO7A1_IOMUX_PWM1)
 
@@ -49,3 +45,25 @@ if __name__ ==  '__main__':
         time.sleep(0.5)
     #gpio.set_level("GPIO7C5", GpioLevel.LOW)
     #gpio.set_mux('GPIO9A15', 0)	# except test for error gpio
+
+class TestGpio(unittest.TestCase):
+    '''
+    run the follow cmd to auto test:
+    python -m unittest gpio_test
+    '''
+    def test_pull(self):
+        '''
+        Make sure GPIO5B1(UART1_TX) connect nothing!!
+        Make sure GPIO0B5 connect nothing!!
+        '''
+        def _test_pull(gpio, pin):
+            gpio.set_dir(pin, GpioDir.INPUT)
+
+            gpio.set_pull(pin, GpioPull.DOWN)
+            self.assertEqual(gpio.get_level(pin), GpioLevel.LOW)
+            gpio.set_pull(pin, GpioPull.UP)
+            self.assertEqual(gpio.get_level(pin), GpioLevel.HIGH)
+
+        gpio=Gpio()
+        _test_pull(gpio, 'GPIO5B1')
+        _test_pull(gpio, 'GPIO0B5')
