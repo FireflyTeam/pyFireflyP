@@ -95,10 +95,10 @@ class Gpio:
         bank,pin,regs = self._get_bank_pin(gpio)
 
         reg = regs.ctrl
-        val = reg.read(CtrlReg.GPIO_SWPORT_DDR)
+        val = reg.read(RegCtrl.GPIO_SWPORT_DDR)
         val &= (~(1<<pin))
         val |= (dir<<pin)
-        reg.write(CtrlReg.GPIO_SWPORT_DDR, val)
+        reg.write(RegCtrl.GPIO_SWPORT_DDR, val)
 
     def get_level(self, gpio):
         """
@@ -108,7 +108,7 @@ class Gpio:
         bank,pin,regs = self._get_bank_pin(gpio)
 
         reg = regs.ctrl
-        val = reg.read(CtrlReg.GPIO_EXT_PORT)
+        val = reg.read(RegCtrl.GPIO_EXT_PORT)
         val >>=pin
         val &=1
         logging.debug("get_level: <%s>=%d" % (gpio, val))
@@ -125,8 +125,8 @@ class Gpio:
         bank,pin,regs = self._get_bank_pin(gpio)
 
         reg = regs.ctrl
-        val = reg.read(CtrlReg.GPIO_SWPORT_DR)
-        reg.write(CtrlReg.GPIO_SWPORT_DR, (val & (~(1<<pin))) | (level<<pin))
+        val = reg.read(RegCtrl.GPIO_SWPORT_DR)
+        reg.write(RegCtrl.GPIO_SWPORT_DR, (val & (~(1<<pin))) | (level<<pin))
 
     def set_mux(self, gpio, mux):
         """
@@ -185,7 +185,7 @@ class Gpio:
 
 def get_pull_offset_bits(gpio):
     offset = -1
-    offset = getattr(PullReg, "GRF_" + gpio[:6] + "_P")
+    offset = getattr(RegPull, "GRF_" + gpio[:6] + "_P")
     return offset
 
 def set_rk32_pull(pin, reg, offset, pull):
@@ -200,7 +200,7 @@ def set_rk32_pull(pin, reg, offset, pull):
 
 def get_drv_offset_bits(gpio):
     offset = -1
-    offset = getattr(DrvReg, "GRF_" + gpio[:6] + "_E")
+    offset = getattr(RegDrv, "GRF_" + gpio[:6] + "_E")
     return offset
 
 set_rk32_drv = set_rk32_pull
@@ -209,13 +209,13 @@ def get_mux_offset_bits(gpio):
     offset = -1
     bits = 0
     try:
-        offset = getattr(MuxReg, "GRF_" + gpio[:6] + "_IOMUX")
+        offset = getattr(RegMux, "GRF_" + gpio[:6] + "_IOMUX")
         bits = 2
     except:
         if gpio[6] < 4:
-            offset = getattr(MuxReg, "GRF_" + gpio[:6] + "L_IOMUX")
+            offset = getattr(RegMux, "GRF_" + gpio[:6] + "L_IOMUX")
         else:
-            offset = getattr(MuxReg, "GRF_" + gpio[:6] + "H_IOMUX")
+            offset = getattr(RegMux, "GRF_" + gpio[:6] + "H_IOMUX")
         bits=4
     return offset,bits
 

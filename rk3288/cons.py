@@ -2,7 +2,7 @@
 
 
 # GPIO iomux registers
-class MuxReg:
+class RegMux:
 	GRF_GPIO0A_IOMUX	=0x0084
 	GRF_GPIO0B_IOMUX	=0x0088
 	GRF_GPIO0C_IOMUX	=0x008c
@@ -41,7 +41,7 @@ class MuxReg:
 	GRF_GPIO8B_IOMUX    =0x0084
 
 # GPIO slew rate control registers
-class SlewReg:
+class RegSlew:
 	GRF_GPIO1H_SR           =0x0104
 	GRF_GPIO2L_SR           =0x0108
 	GRF_GPIO2H_SR           =0x010c
@@ -58,7 +58,7 @@ class SlewReg:
 	GRF_GPIO8L_SR           =0x0138
 
 # GPIO pull up/pull down registers
-class PullReg:
+class RegPull:
 	GRF_GPIO0A_P            =0x0064
 	GRF_GPIO0B_P            =0x0068
 	GRF_GPIO0C_P            =0x006c
@@ -94,7 +94,7 @@ class PullReg:
 	GRF_GPIO8B_P            =0x01b4
 
 # GPIO drive strength control registers
-class DrvReg:
+class RegDrv:
 	GRF_GPIO0A_E            =0x0070
 	GRF_GPIO0B_E            =0x0074
 	GRF_GPIO0C_E            =0x0078
@@ -130,7 +130,7 @@ class DrvReg:
 	GRF_GPIO8B_E            =0x0234
 
 # GPIO control registers
-class CtrlReg:
+class RegCtrl:
     GPIO_SWPORT_DR     =0x00
     GPIO_SWPORT_DDR    =0x04
     GPIO_INTEN         =0x30
