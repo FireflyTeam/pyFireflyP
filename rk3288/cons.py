@@ -144,6 +144,14 @@ class RegCtrl:
     GPIO_EXT_PORT      =0x50
     GPIO_LS_SYNC       =0x60
 
+# PWM registers
+class RegPwm:
+    PWM_REG_CNTR       =0x00
+    PWM_REG_PERIOD     =0x04       #PWM_REG_HRC
+    PWM_REG_DUTY       =0x08       #PWM_REG_LRC   
+    PWM_REG_CTRL       =0x0c
+
+
 class GpioLevel:
     LOW = 0
     HIGH = 1
@@ -173,6 +181,26 @@ class GpioDrv:
 	DRV_4MA		=1
 	DRV_8MA		=2
 	DRV_12MA	=3
+
+class PwmCtrl:
+    PWM_DISABLE         =(0 << 0) 
+    PWM_ENABLE          =(1 << 0)
+
+    PWM_SHOT               =(0 << 1)
+    PWM_CONTINUMOUS        =(1 << 1)
+    PWM_CAPTURE         =(1 << 2)
+
+    PWM_DUTY_POSTIVE       =(1 << 3)
+    PWM_DUTY_NEGATIVE      =(0 << 3)
+
+    PWM_INACTIVE_POSTIVE   =(1 << 4)
+    PWM_INACTIVE_NEGATIVE  =(0 << 4)
+
+    PWM_OUTPUT_LEFT        =(0 << 5)
+    PWM_OUTPUT_ENTER       =(1 << 5)
+
+    PWM_LP_ENABLE          =(1<<8)
+    PWM_LP_DISABLE         =(0<<8)
 
 	
 BANK={
