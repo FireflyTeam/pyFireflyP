@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 
 from lib.devmem import MapReg
-from cons import *
+from rk3288.cons import *
 
 import pdb
 import logging

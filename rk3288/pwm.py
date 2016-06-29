@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 
 from lib.devmem import MapReg
-from cons import *
+from rk3288.cons import *
 
 import pdb
 import logging
@@ -141,9 +141,9 @@ class Pwm(PwmCtrl):
             div = 1000000000
             div *= 1 + prescale
             val = clk_rate * period
-            pv = val/div
+            pv = val//div
             val = clk_rate * duty
-            dc = val/div
+            dc = val//div
 
             # if duty_ns and period_ns are not achievable then return
             if pv < PWMPCR_MIN_PERIOD or  dc < PWMDCR_MIN_DUTY:

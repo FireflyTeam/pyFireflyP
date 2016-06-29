@@ -27,10 +27,9 @@ class DevMem:
     mask = ~(word - 1)
 
     def __init__(self, base_addr, length = 1, filename = '/dev/mem',
-                 debug = 0):
+                 ):
 
         if base_addr < 0 or length < 0: raise AssertionError
-        self._debug = debug
 
         self.base_addr = base_addr & ~(mmap.PAGESIZE - 1)
         self.base_addr_offset = base_addr - self.base_addr
@@ -47,8 +46,8 @@ class DevMem:
         #if (self.base_addr + self.length) > filesize:
         #    self.length = filesize - self.base_addr
 
-        self.debug('init with base_addr = {0} and length = {1} on {2}'.
-                format(hex(self.base_addr), hex(self.length), self.fname))
+        # self.debug('init with base_addr = {0} and length = {1} on {2}'.
+        #         format(hex(self.base_addr), hex(self.length), self.fname))
 
         # Open file and mmap
         f = os.open(self.fname, os.O_RDWR | os.O_SYNC)
@@ -66,8 +65,8 @@ class DevMem:
         # Make reading easier (and faster... won't resolve dot in loops)
         mem = self.mem
 
-        self.debug('reading {0} bytes from offset {1}'.
-                   format(length * self.word, hex(offset)))
+        # self.debug('reading {0} bytes from offset {1}'.
+        #            format(length * self.word, hex(offset)))
 
         # Compensate for the base_address not being what the user requested
         # and then seek to the aligned offset.
@@ -91,8 +90,8 @@ class DevMem:
     def write(self, offset, din):
         if offset < 0 or len(din) <= 0: raise AssertionError
 
-        self.debug('writing {0} bytes to offset {1}'.
-                format(len(din), hex(offset)))
+        # self.debug('writing {0} bytes to offset {1}'.
+        #         format(len(din), hex(offset)))
 
         # Make reading easier (and faster... won't resolve dot in loops)
         mem = self.mem
@@ -110,16 +109,18 @@ class DevMem:
 
         # Read until the end of our aligned address
         for i in range(0, len(din), self.word):
-            self.debug('writing at position = {0}: 0x{1:x}'.
-                        format(self.mem.tell(), din[i]))
+            # self.debug('writing at position = {0}: 0x{1:x}'.
+            #             format(self.mem.tell(), din[i]))
             # Write one word at a time
             mem.write(struct.pack('I', din[i]))
 
+    '''
     def debug_set(self, value):
         self._debug = value
 
     def debug(self, debug_str):
         if self._debug: print 'DevMem Debug: {0}'.format(debug_str)
+    '''
 
 
 class MapReg:
@@ -127,7 +128,7 @@ class MapReg:
         self.name = name # just for debug
         self.addr = addr
         self.size = size
-        self.mem = DevMem(addr, size, "/dev/mem", 0)
+        self.mem = DevMem(addr, size, "/dev/mem")
 
     def write(self, offset, val):
         # logging.debug("write: \toffset=%#06x, val=%#010x\t(%s)" % (offset, val, bin(val)))
