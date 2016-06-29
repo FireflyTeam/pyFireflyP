@@ -1,7 +1,6 @@
 #!/usr/bin/env python
 
 from rk3288.gpio import Gpio
-from rk3288.cons import *
 
 import time
 import pdb
@@ -24,20 +23,20 @@ if __name__ ==  '__main__':
     # except test for error gpio
     # Gpio('GPIO9A15').set_mux(0)	
 
-    g0b5.set_dir(GpioDir.OUTPUT)
-    g0b5.set_drv(GpioDrv.DRV_2MA)
-    g0b5.set_drv(GpioDrv.DRV_12MA)
+    g0b5.set_dir(Gpio.OUTPUT)
+    g0b5.set_drv(Gpio.E_2MA)
+    g0b5.set_drv(Gpio.E_12MA)
 
 
     gpio_blue_led=Gpio(LED_BLUE)
     gpio_yellow_led=Gpio(LED_YELLOW)
-    gpio_blue_led.set_dir(GpioDir.OUTPUT)
-    gpio_yellow_led.set_dir(GpioDir.OUTPUT)
+    gpio_blue_led.set_dir(Gpio.OUTPUT)
+    gpio_yellow_led.set_dir(Gpio.OUTPUT)
     while(True):
-        gpio_blue_led.set_level(GpioLevel.HIGH)
-        gpio_yellow_led.set_level(GpioLevel.LOW)
+        gpio_blue_led.set_level(Gpio.HIGH)
+        gpio_yellow_led.set_level(Gpio.LOW)
         time.sleep(0.5)
-        gpio_blue_led.set_level(GpioLevel.LOW)
-        gpio_yellow_led.set_level(GpioLevel.HIGH)
+        gpio_blue_led.set_level(Gpio.LOW)
+        gpio_yellow_led.set_level(Gpio.HIGH)
         time.sleep(0.5)
 

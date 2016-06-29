@@ -177,10 +177,10 @@ class GpioPull:
 	BUS_HOLD	=3
 
 class GpioDrv:
-	DRV_2MA		=0
-	DRV_4MA		=1
-	DRV_8MA		=2
-	DRV_12MA	=3
+	E_2MA		=0
+	E_4MA		=1
+	E_8MA		=2
+	E_12MA	    =3
 
 class PwmCtrl:
     PWM_DISABLE         =(0 << 0) 

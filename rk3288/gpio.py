@@ -18,7 +18,7 @@ class Bank:
         return '\nctrl\t%s\niomux\t%s\npull\t%s\ndrv\t%s' % (self.ctrl, self.iomux, self.pull, self.drv)
     __repr__ = __str__
 
-class Gpio:
+class Gpio(GpioLevel, GpioDir, GpioMux, GpioPull, GpioDrv):
     _inited = 0
 
     @staticmethod
