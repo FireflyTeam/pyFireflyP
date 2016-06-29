@@ -1,31 +1,11 @@
 #!/usr/bin/env python
 
-from lib import devmem
+from lib.devmem import MapReg
 from cons import *
 
 import pdb
 import logging
 
-
-class MapReg:
-    def __init__(self, name, addr, size):
-        self.name = name # just for debug
-        self.addr = addr
-        self.size = size
-        self.mem = devmem.DevMem(addr, size, "/dev/mem", 0)
-
-    def write(self, offset, val):
-        logging.debug("write: \toffset=%#06x, val=%#010x\t(%s)" % (offset, val, bin(val)))
-        self.mem.write(offset, [val,])
-
-    def read(self, offset):
-        val = self.mem.read(offset, 1)[0]
-        logging.debug("read: \toffset=%#06x, val=%#010x\t(%s)" % (offset, val, bin(val)))
-        return val
-
-    def __str__(self):
-        return 'MapReg: name=%s, phyaddr=%#010x, len=%#x' % (self.name, self.addr, self.size)
-    __repr__ = __str__
 
 class Bank:
     def __init__(self, ctrl, iomux, pull, drv):
