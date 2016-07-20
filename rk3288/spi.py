@@ -59,7 +59,7 @@ def _ioc(direction, number, structure):
     return direction, op, structure
 
 
-class SPI(object):
+class Spi(object):
     """
     struct spi_ioc_transfer {
         __u64           tx_buf;
@@ -134,7 +134,8 @@ class SPI(object):
         if not os.path.exists(device):
             raise IOError("{} does not exist".format(device))
 
-        self.handle = open(device, "w+")
+        #for compatible with python3 by zhansb
+        self.handle = os.open(device, os.O_RDWR)
 
         if speed is not None:
             self.speed = speed
@@ -169,21 +170,21 @@ class SPI(object):
     def _ioctl(self, ioctl_data, data=None):
         """ioctl helper function.
 
-        Performs an ioctl on self.handle. If the ioctl is an SPI read type
+        Performs an ioctl on self.handle. If the ioctl is an Spi read type
         ioctl, returns the result value.
 
         Args:
             ioctl_data: Tuple of (direction, op structure), where direction
-            is one of SPI._IOC_READ or SPI._IOC_WRITE, op is the
+            is one of Spi._IOC_READ or Spi._IOC_WRITE, op is the
             pre-computed ioctl op (see _ioc above) and structure is the
             Python format string for the ioctl arguments.
 
         Returns:
-            If ioctl_data specifies an SPI._IOC_READ, returns the result.
-            For SPI._IOC_WRITE types, returns None
+            If ioctl_data specifies an Spi._IOC_READ, returns the result.
+            For Spi._IOC_WRITE types, returns None
         """
         (direction, ioctl, structure) = ioctl_data
-        if direction == SPI._IOC_READ:
+        if direction == Spi._IOC_READ:
             arg = array.array(structure, [0])
             fcntl.ioctl(self.handle, ioctl, arg, True)
             return arg[0]
@@ -196,21 +197,21 @@ class SPI(object):
         """Helper function to get spidev mode
 
         Returns:
-            spidev mode as an integer. Bits correspond to SPI.CPHA,
-            SPI.CPOL, SPI.CS_HIGH, SPI.LSB_FIRST, SPI.THREE_WIRE, SPI.LOOP,
-            SPI.NO_CS, and SPI.READY
+            spidev mode as an integer. Bits correspond to Spi.CPHA,
+            Spi.CPOL, Spi.CS_HIGH, Spi.LSB_FIRST, Spi.THREE_WIRE, Spi.LOOP,
+            Spi.NO_CS, and Spi.READY
         """
-        return self._ioctl(SPI._IOC_RD_MODE)
+        return self._ioctl(Spi._IOC_RD_MODE)
 
     def _set_mode(self, mode):
         """Helper function to set the spidev mode
 
         Args:
-            mode: spidev mode as an integer. Bits correspond to SPI.CPHA,
-            SPI.CPOL, SPI.CS_HIGH, SPI.LSB_FIRST, SPI.THREE_WIRE, SPI.LOOP,
-            SPI.NO_CS, and SPI.READY
+            mode: spidev mode as an integer. Bits correspond to Spi.CPHA,
+            Spi.CPOL, Spi.CS_HIGH, Spi.LSB_FIRST, Spi.THREE_WIRE, Spi.LOOP,
+            Spi.NO_CS, and Spi.READY
         """
-        self._ioctl(SPI._IOC_WR_MODE, mode)
+        self._ioctl(Spi._IOC_WR_MODE, mode)
 
     def _get_mode_field(self, field):
         """Helper function to get specific spidev mode bits
@@ -239,120 +240,120 @@ class SPI(object):
 
     @property
     def phase(self):
-        """SPI clock phase bit
+        """Spi clock phase bit
 
         False: Sample at leading edge of clock
         True: Sample at trailing edge of clock
         """
-        return self._get_mode_field(SPI.CPHA)
+        return self._get_mode_field(Spi.CPHA)
 
     @phase.setter
     def phase(self, phase):
-        self._set_mode_field(SPI.CPHA, phase)
+        self._set_mode_field(Spi.CPHA, phase)
 
     @property
     def polarity(self):
-        """SPI polarity bit
+        """Spi polarity bit
 
         False: Data sampled at rising edge, data changes on falling edge
         True: Data sampled at falling edge, data changes on rising edge
         """
-        return self._get_mode_field(SPI.CPOL)
+        return self._get_mode_field(Spi.CPOL)
 
     @polarity.setter
     def polarity(self, polarity):
-        self._set_mode_field(SPI.CPOL, polarity)
+        self._set_mode_field(Spi.CPOL, polarity)
 
     @property
     def cs_high(self):
-        """SPI chip select active level
+        """Spi chip select active level
 
         True: Chip select is active high
         False: Chip select is active low
         """
-        return self._get_mode_field(SPI.CS_HIGH)
+        return self._get_mode_field(Spi.CS_HIGH)
 
     @cs_high.setter
     def cs_high(self, cs_high):
-        self._set_mode_field(SPI.CS_HIGH, cs_high)
+        self._set_mode_field(Spi.CS_HIGH, cs_high)
 
     @property
     def lsb_first(self):
-        """Bit order of SPI word transfers
+        """Bit order of Spi word transfers
 
         False: Send MSB first
         True: Send LSB first
         """
-        return self._get_mode_field(SPI.LSB_FIRST)
+        return self._get_mode_field(Spi.LSB_FIRST)
 
     @lsb_first.setter
     def lsb_first(self, lsb_first):
-        self._set_mode_field(SPI.LSB_FIRST, lsb_first)
+        self._set_mode_field(Spi.LSB_FIRST, lsb_first)
 
     @property
     def three_wire(self):
-        """SPI 3-wire mode
+        """Spi 3-wire mode
 
         True: Data is read and written on the same line (3-wire mode)
         False: Data is read and written on separate lines (MOSI & MISO)
         """
-        return self._get_mode_field(SPI.THREE_WIRE)
+        return self._get_mode_field(Spi.THREE_WIRE)
 
     @three_wire.setter
     def three_wire(self, three_wire):
-        self._set_mode_field(SPI.THREE_WIRE, three_wire)
+        self._set_mode_field(Spi.THREE_WIRE, three_wire)
 
     @property
     def loop(self):
-        """SPI loopback mode"""
-        return self._get_mode_field(SPI.LOOP)
+        """Spi loopback mode"""
+        return self._get_mode_field(Spi.LOOP)
 
     @loop.setter
     def loop(self, loop):
-        self._set_mode_field(SPI.LOOP, loop)
+        self._set_mode_field(Spi.LOOP, loop)
 
     @property
     def no_cs(self):
         """No chipselect. Single device on bus."""
-        return self._get_mode_field(SPI.NO_CS)
+        return self._get_mode_field(Spi.NO_CS)
 
     @no_cs.setter
     def no_cs(self, no_cs):
-        self._set_mode_field(SPI.NO_CS, no_cs)
+        self._set_mode_field(Spi.NO_CS, no_cs)
 
     @property
     def ready(self):
         """Slave pulls low to pause"""
-        return self._get_mode_field(SPI.READY)
+        return self._get_mode_field(Spi.READY)
 
     @ready.setter
     def ready(self, ready):
-        self._set_mode_field(SPI.READY, ready)
+        self._set_mode_field(Spi.READY, ready)
 
     @property
     def speed(self):
-        """Maximum SPI transfer speed in Hz.
+        """Maximum Spi transfer speed in Hz.
 
         Note that the controller cannot necessarily assign the requested
         speed.
         """
-        return self._ioctl(SPI._IOC_RD_MAX_SPEED_HZ)
+        return self._ioctl(Spi._IOC_RD_MAX_SPEED_HZ)
 
     @speed.setter
     def speed(self, speed):
-        self._ioctl(SPI._IOC_WR_MAX_SPEED_HZ, speed)
+        self._ioctl(Spi._IOC_WR_MAX_SPEED_HZ, speed)
 
     @property
     def bits_per_word(self):
-        """Number of bits per word of SPI transfer.
+        """Number of bits per word of Spi transfer.
 
         A value of 0 is equivalent to 8 bits per word
         """
-        return self._ioctl(SPI._IOC_RD_BITS_PER_WORD)
+        return self._ioctl(Spi._IOC_RD_BITS_PER_WORD)
 
     @bits_per_word.setter
     def bits_per_word(self, bits_per_word):
-        self._ioctl(SPI._IOC_WR_BITS_PER_WORD, bits_per_word)
+        self._ioctl(Spi._IOC_WR_BITS_PER_WORD, bits_per_word)
 
     @property
     def mode(self):
@@ -363,7 +364,7 @@ class SPI(object):
         self._set_mode(mode)
 
     def write(self, data, speed=0, bits_per_word=0, delay=0):
-        """Perform half-duplex SPI write.
+        """Perform half-duplex Spi write.
 
         Args:
             data: List of words to write
@@ -377,14 +378,14 @@ class SPI(object):
         data = array.array('B', data).tostring()
         length = len(data)
         transmit_buffer = ctypes.create_string_buffer(data)
-        spi_ioc_transfer = struct.pack(SPI._IOC_TRANSFER_FORMAT,
+        spi_ioc_transfer = struct.pack(Spi._IOC_TRANSFER_FORMAT,
                                        ctypes.addressof(transmit_buffer), 0,
                                        length, speed, delay, bits_per_word, 0,
                                        0, 0, 0)
-        fcntl.ioctl(self.handle, SPI._IOC_MESSAGE, spi_ioc_transfer)
+        fcntl.ioctl(self.handle, Spi._IOC_MESSAGE, spi_ioc_transfer)
 
     def read(self, length, speed=0, bits_per_word=0, delay=0):
-        """Perform half-duplex SPI read as a binary string
+        """Perform half-duplex Spi read as a binary string
 
         Args:
             length: Integer count of words to read
@@ -399,15 +400,15 @@ class SPI(object):
             List of words read from device
         """
         receive_buffer = ctypes.create_string_buffer(length)
-        spi_ioc_transfer = struct.pack(SPI._IOC_TRANSFER_FORMAT, 0,
+        spi_ioc_transfer = struct.pack(Spi._IOC_TRANSFER_FORMAT, 0,
                                        ctypes.addressof(receive_buffer),
                                        length, speed, delay, bits_per_word, 0,
                                        0, 0, 0)
-        fcntl.ioctl(self.handle, SPI._IOC_MESSAGE, spi_ioc_transfer)
+        fcntl.ioctl(self.handle, Spi._IOC_MESSAGE, spi_ioc_transfer)
         return [ord(byte) for byte in ctypes.string_at(receive_buffer, length)]
 
     def transfer(self, data, speed=0, bits_per_word=0, delay=0):
-        """Perform full-duplex SPI transfer
+        """Perform full-duplex Spi transfer
 
         Args:
             data: List of words to transmit
@@ -419,16 +420,16 @@ class SPI(object):
                 deselecting the chip select line. 0 (default) for no delay.
 
         Returns:
-            List of words read from SPI bus during transfer
+            List of words read from Spi bus during transfer
         """
         data = array.array('B', data).tostring()
         length = len(data)
         transmit_buffer = ctypes.create_string_buffer(data)
         receive_buffer = ctypes.create_string_buffer(length)
-        spi_ioc_transfer = struct.pack(SPI._IOC_TRANSFER_FORMAT,
+        spi_ioc_transfer = struct.pack(Spi._IOC_TRANSFER_FORMAT,
                                        ctypes.addressof(transmit_buffer),
                                        ctypes.addressof(receive_buffer),
                                        length, speed, delay, bits_per_word, 0,
                                        0, 0, 0)
-        fcntl.ioctl(self.handle, SPI._IOC_MESSAGE, spi_ioc_transfer)
+        fcntl.ioctl(self.handle, Spi._IOC_MESSAGE, spi_ioc_transfer)
         return [ord(byte) for byte in ctypes.string_at(receive_buffer, length)]
