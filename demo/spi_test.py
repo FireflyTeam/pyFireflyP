@@ -1,8 +1,8 @@
 #!/usr/bin/env python
 
 
-from rk3288.gpio import Gpio
-from rk3288.spi import Spi
+from fireflyP.rk3288.gpio import Gpio
+from fireflyP.rk3288.spi import Spi
 
 import time
 import pdb
