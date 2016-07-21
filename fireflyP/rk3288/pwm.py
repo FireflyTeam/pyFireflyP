@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 
-from lib.devmem import MapReg
-from rk3288.cons import *
+from fireflyP.lib.devmem import MapReg
+from fireflyP.cons import *
 
 import pdb
 import logging

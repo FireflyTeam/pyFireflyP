@@ -1,4 +1,3 @@
-from .cons import *  
-from .gpio import *  
-from .pwm import *  
-from .spi import *  
+from .gpio import Gpio
+from .pwm import Pwm
+from .spi import Spi

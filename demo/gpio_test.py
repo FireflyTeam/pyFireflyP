@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 
-from rk3288.gpio import Gpio
+from fireflyP import Gpio
 
 import time
 import pdb

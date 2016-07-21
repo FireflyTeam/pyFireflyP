@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 
-from rk3288.gpio import Gpio
-from rk3288.pwm import Pwm
+from fireflyP import Pwm
+from fireflyP import Gpio
 
 import time
 import pdb

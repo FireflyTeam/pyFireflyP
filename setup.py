@@ -1,12 +1,52 @@
 from distutils.core import setup
+from distutils.command.build_ext import build_ext as _build_ext
+
+import re,sys
+
+PLAT_SUPPORT={
+    'Rockchip RK3288': 'rk3288',
+}
+
+def check_plat():
+    cpuinfo = open("/proc/cpuinfo", 'r')
+    for line in cpuinfo:
+        m = re.match(r'^Hardware\s*:\s*(.*)',line)
+        if m is not None:
+            break
+
+
+    if m is None:
+        print('Not found platform information!')
+        return None
+
+    try:
+        plat=m.group(1)
+    except:
+        print('Not found hardware information!')
+        return None
+
+    for psk in PLAT_SUPPORT.keys():
+        if psk in plat:
+            print('FireflyP use <%s>' % PLAT_SUPPORT[psk])
+            return PLAT_SUPPORT[psk]
+
+    print('FireflyP do not support <%s>!' % plat)
+    return None
+
+
+fplat=check_plat()
+if fplat is None:
+    sys.exit(1)
+
 
 setup(
     name='fireflyP',
-    version='0.6.0',
+    version='0.8.0',
     author='zhansb',
     author_email='service@t-firefly.com',
     url='http://en.t-firefly.com/en/',
     license='MIT',
-    packages=['fireflyP', 'fireflyP/lib','fireflyP/rk3288'],
+    packages=['fireflyP','fireflyP.lib'],
+    package_dir={'fireflyP': 'fireflyP/'+fplat, 'fireflyP.lib':'fireflyP/lib'},
     description='FireflyP is designed for using devices port on firefly platforms',
     )
