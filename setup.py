@@ -1,4 +1,7 @@
-from distutils.core import setup
+try:
+    from setuptools import setup
+except:
+    from distutils.core import setup
 from distutils.command.build_ext import build_ext as _build_ext
 
 import re,sys
@@ -41,7 +44,7 @@ if fplat is None:
 
 setup(
     name='fireflyP',
-    version='0.8.0',
+    version='0.8.2',
     author='zhansb',
     author_email='service@t-firefly.com',
     url='http://en.t-firefly.com/en/',
