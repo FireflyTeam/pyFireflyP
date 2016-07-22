@@ -1,1 +1,2 @@
-from devmem import *
+from .devmem import *
+from .common import *
